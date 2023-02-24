@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+    @apply m-0 p-0 box-border bg-main-l-bg dark:bg-main-d-bg text-txt-p-l dark:text-txt-p-d
+}
+
+
+h1 {
+    @apply font-Montserrat dark:text-white text-black font-bold text-xl
+}
+
+h2,h3,h4,h5,h6 {
+    @apply font-Montserrat font-semibold text-xl
+}
+
+.active-scale {
+    @apply active:scale-95
+}
+
+.my-border {
+    @apply  border border-border-bg-l dark:border-border-bg-d 
+}
+
+.link {
+    @apply flex items-center cursor-pointer active-scale h-fit px-4 dark:hover:bg-main-d-bg transition-colors
+         hover:bg-main-l-bg py-2 rounded-full 
+}
+
+.dark-text {
+    @apply text-txt-h-l hover:text-txt-p-l dark:text-txt-h-d dark:hover:text-txt-p-d cursor-pointer
+}
+
+.post-text {
+    @apply text-txt-p-d hover:text-white
+}
