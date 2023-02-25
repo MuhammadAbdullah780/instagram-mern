@@ -34,11 +34,11 @@ app.use(express.urlencoded({ extended:true }))
 app.use("/api/post", PostRoutes);
 app.use("/api/auth", AuthRoutes);
 app.use("/api/profile", ProfileRoutes);
-app.get("*", (req,res)=> {
-  res.sendFile(path.join(__dirname, "./frontend/build/index.html"), (err) => {
-    res.status(500).send(err)
-  })
-})
+// app.get("*", (req,res)=> {
+//   res.sendFile(path.join(__dirname, "./frontend/build/index.html"), (err) => {
+//     res.status(500).send(err)
+//   })
+// })
 
 // * LISTENING THE SERVER...
 app.listen(port, () => console.log(`Server is listening on port ${port}!`));
