@@ -5,7 +5,8 @@ const User = require("../models/UserModel");
 const isLoggedInOrNot = async (req, res, next) => {
   try {
     const { authorization } = req.headers;
-    const token = authorization.split(" ")[1];
+    const token = authorization.split(" ")[1]
+    
     // * INVALID TOKEN
     if (!token) {
       return res.status(StatusCodes.UNAUTHORIZED).json({

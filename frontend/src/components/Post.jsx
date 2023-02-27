@@ -5,7 +5,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import ModeCommentOutlinedIcon from "@mui/icons-material/ModeCommentOutlined";
 import moment from "moment";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import CreatePostModel from "./CreatePostModel";
@@ -17,6 +17,7 @@ import {
   useDeletePostMutation,
   useRemoveLikeMutation,
 } from "../services/PostEndpoints";
+import { addComment, deletePost, likePost, unLikePost } from "../slices/PostSlice";
 
 function Post({ item, children }) {
   const User = useSelector((state) => state.User);
@@ -25,15 +26,12 @@ function Post({ item, children }) {
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
-  // * MUTATIONS
-  const [deletePost, { isLoading: deletePostLoading }] = useDeletePostMutation();
-  const [addLike, { data }] = useAddLikeMutation();
-  const [removeLike, { isLoading: removeLikeLoading , isSuccess: removeLikeSuccess }] = useRemoveLikeMutation();
-  const [addComment] = useAddCommentMutation();
   const handleDeletePost = () => {
-    closeDropdown();
-    deletePost(item._id);
+    dispatch(deletePost(item._id)).then(()=> {
+      closeDropdown();
+    })
   };
 
   const closeDropdown = () => {
@@ -63,7 +61,7 @@ function Post({ item, children }) {
         mode="Update"
         postId={item._id}
       />
-      <Stack className={`dark:bg-black ${ deletePostLoading ? 'animate-pulse' : null } my-border rounded-md  bg-white small-mobile:w-[450px] w-full py-1`}>
+      <Stack className='dark:bg-black my-border rounded-md  bg-white small-mobile:w-[450px] w-full py-1'>
         <Box
           display="flex"
           alignItems="center"
@@ -126,10 +124,10 @@ function Post({ item, children }) {
           onDoubleClick={
             item.likes.includes(User?._id)
               ? () => {
-                  removeLike(item._id);
+                dispatch(unLikePost(item._id))
                 }
               : () => {
-                  addLike(item._id);
+                dispatch(likePost(item._id))
                 }
           }
           src={item.image}
@@ -140,14 +138,14 @@ function Post({ item, children }) {
             <Box className="flex gap-x-4">
               {item.likes.includes(User?._id) ? (
                 <FavoriteIcon
-                  className={` ${(removeLikeLoading && !removeLikeSuccess) && 'animate-pulse' }  dark-text active-scale`}
+                  className='dark-text active-scale'
                   style={{ fill: "#FD1D1D" }}
-                  onClick={() => removeLike(item._id)}
+                  onClick={() => dispatch(unLikePost(item._id))}
                 />
               ) : (
                 <FavoriteBorderIcon
                   className="dark-text active-scale dark:fill-white fill-black"
-                  onClick={() => addLike(item._id)}
+                  onClick={() => dispatch(likePost(item._id))}
                 />
               )}
               <Link to={`/p/${item._id}`}>
@@ -182,10 +180,12 @@ function Post({ item, children }) {
                   className="text-insta-blue background-transparent font-bold px-3 py-1 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   onClick={() => {
-                    addComment({
-                      id: item._id,
-                      data: commentRef.current.value,
-                    });
+                    dispatch(
+                      addComment({
+                        id: item._id,
+                        data: commentRef.current.value,
+                      })
+                    )
                     commentRef.current.value = "";
                     navigate(`/p/${item._id}`);
                   }}

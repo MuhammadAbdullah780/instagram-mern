@@ -1,11 +1,10 @@
 import axios from 'axios'
 
-
-const token = localStorage.getItem('token')
+const token = JSON.parse(localStorage.getItem('token'))
 const axiosApi = axios.create({
     baseURL: 'http://localhost:5700/api',
     headers: {
-        'authorization': token ? `Bearer ${token}` : null,
+        authorization: token ? `Bearer ${token}` : null,
         'Content-Type':'application/json',
     }
 })

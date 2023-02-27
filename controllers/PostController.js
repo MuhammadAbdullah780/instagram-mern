@@ -142,6 +142,7 @@ const addLikeOnPost = async (req, res, next) => {
             msg: "Successfully like the Post",
           });
         }
+        console.log(success);
         res.status(404).json({
           msg: error.message,
         });

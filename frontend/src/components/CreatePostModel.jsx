@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
-import { addPost } from "../slices/PostSlice";
+import { addPost, updatePost } from "../slices/PostSlice";
 
 const CreatePostModel = ({
   modalOpen,
@@ -27,29 +27,26 @@ const CreatePostModel = ({
   postId,
 }) => {
   const User = useSelector((state) => state.User);
-  const [Image, setImage] = useState(image || null);
-  const [input, setInput] = useState(caption || "");
+  const [Image, setImage] = useState(image);
+  const [input, setInput] = useState(caption);
   const dispatch = useDispatch();
-  const [
-    updatePost,
-    {
-      isSuccess: updatePostSuccess,
-      isError: isupdatePostError,
-      error: updatePostError,
-      data: updatePostData,
-      isLoading: isUpdatePostLoading,
-    },
-  ] = useUpdatePostMutation();
   // * SUBMITTING POST LOGIC
   const handleCreatePost = (e) => {
     e.preventDefault();
     try {
+      console.log("image: ", Image);
+      console.log("caption: ", input);
       dispatch(
         addPost({
-          image: Image,
-          caption: input,
+          data: {
+            image: Image,
+            caption: input,
+          },
         })
-      );
+      ).then(()=> {
+        setImage(null);
+        setInput("");
+      })
     } catch (error) {}
   };
 
@@ -57,23 +54,19 @@ const CreatePostModel = ({
   const handleUpdatePost = (e) => {
     e.preventDefault();
     console.log("postId: ", postId);
-    updatePost({
-      id: postId,
-      data: {
-        image: Image,
-        caption: input,
-      },
+    dispatch(
+      updatePost({
+        id: postId,
+        data: {
+          image: Image,
+          caption: input,
+        },
+      })
+    ).then(() => {
+      console.log("complete");
     });
     setImage(null);
     setInput("");
-    if (!isUpdatePostLoading) {
-      if (updatePostSuccess) {
-        toast.success(updatePostData.msg);
-      }
-      if (isupdatePostError) {
-        toast.error(updatePostError);
-      }
-    }
   };
 
   // * LOGIC FOR DISPLAYING THE SELECTED IMAGE
