@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./login.css";
 import { useLogInMutation } from "../../services/AuthEndpoints";
 import { toast } from "react-hot-toast";
 
 const Login = () => {
-  const emailRef = useRef("");
-  const passwordRef = useRef("");
+  const [email, setEmail] = useState('');
+  const [password , setPassword] = useState('');
   const token = JSON.parse(localStorage.getItem("token"))
   const [logIn, { error, isSuccess, isLoading, data }] = useLogInMutation()
   const navigate = useNavigate()
@@ -21,8 +21,6 @@ const Login = () => {
 
   const logInUser = async (e)=> {
     e.preventDefault()
-    const email = emailRef.current.value
-    const password = passwordRef.current.value
     logIn({
       email,
       password
@@ -47,7 +45,8 @@ const Login = () => {
             id="email"
             placeholder="Phone number, username, or email"
             type="email"
-            ref={emailRef}
+            value={email}
+            onChange={({ target })=> setEmail(target.value)}
             required
           />
           <input
@@ -56,7 +55,8 @@ const Login = () => {
             placeholder="Password"
             type="password"
             required
-            ref={passwordRef}
+            value={password}
+            onChange={({ target })=> setPassword(target.value)}
           />
           <button type="submit" className="active-scale text-sm text-center bg-blue-300 text-white py-1 rounded font-medium">
             Log In

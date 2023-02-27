@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Feed from "./pages/Feed";
 import ProfilePage from "./pages/ProfilePage";
@@ -7,6 +7,7 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import UserPosts from "./pages/UserPosts";
 import ProfileEdit from './pages/ProfileEdit'
 import { CircularProgress, Box } from "@mui/material";
+
 
 const Login = lazy(() => import("./components/login/Login"));
 const Home = lazy(() => import("./pages/Home"));

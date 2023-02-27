@@ -1,31 +1,29 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useSignUpMutation } from "../../services/AuthEndpoints";
 
 const SignUp = () => {
-  const usernameRef = useRef("");
-  const passwordRef = useRef("");
-  const emailRef = useRef("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
-  const token = JSON.parse(localStorage.getItem("token"))
+  const token = JSON.parse(localStorage.getItem("token"));
   const [signUp, { isError, error, isLoading, data }] = useSignUpMutation();
 
-
-  useEffect(()=> {
+  useEffect(() => {
     if (token) {
-      navigate("/")
+      navigate("/");
     }
-  },[token, navigate])
-
+  }, [token, navigate]);
 
   const signUpTheUser = async (e) => {
     e.preventDefault();
 
     signUp({
-      username: usernameRef.current.value,
-      email: emailRef.current.value,
-      password: passwordRef.current.value,
+      username,
+      email,
+      password,
     });
 
     if (!isLoading) {
@@ -33,7 +31,7 @@ const SignUp = () => {
         toast.error(error.data.msg);
       } else {
         toast.success(data.msg);
-        navigate("/login")
+        navigate("/login");
       }
     }
   };
@@ -48,7 +46,8 @@ const SignUp = () => {
             id="username"
             placeholder="Enter Your Username"
             type="text"
-            ref={usernameRef}
+            value={username}
+            onChange={({ target }) => setUsername(target.value)}
             required
           />
           <input
@@ -57,12 +56,14 @@ const SignUp = () => {
             placeholder="Enter Your Email"
             type="email"
             required
-            ref={emailRef}
+            value={email}
+            onChange={({ target }) => setEmail(target.value)}
           />
           <input
             className="text-xs w-full mb-4 rounded border bg-gray-100 border-gray-300 px-2 py-2 focus:outline-none focus:border-gray-400 active:outline-none"
             id="password"
-            ref={passwordRef}
+            value={password}
+            onChange={({ target }) => setPassword(target.value)}
             placeholder="Enter Your Password"
             type="password"
             required

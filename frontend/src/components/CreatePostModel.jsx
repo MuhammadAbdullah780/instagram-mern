@@ -14,8 +14,9 @@ import {
   Avatar,
   Input,
 } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
+import { addPost } from "../slices/PostSlice";
 
 const CreatePostModel = ({
   modalOpen,
@@ -25,20 +26,10 @@ const CreatePostModel = ({
   mode,
   postId,
 }) => {
-  const inputRef = useRef(caption || "");
   const User = useSelector((state) => state.User);
   const [Image, setImage] = useState(image || null);
-
-  const [
-    addPost,
-    {
-      isSuccess: addPostSuccess,
-      isError: isCreatePostError,
-      error: createPostError,
-      data,
-      isLoading: isCreatePostLoading,
-    },
-  ] = useAddPostMutation();
+  const [input, setInput] = useState(caption || "");
+  const dispatch = useDispatch();
   const [
     updatePost,
     {
@@ -52,22 +43,14 @@ const CreatePostModel = ({
   // * SUBMITTING POST LOGIC
   const handleCreatePost = (e) => {
     e.preventDefault();
-    addPost({
-      data: {
-        image: Image,
-        caption: inputRef.current.value,
-      },
-    });
-    setImage(null);
-    inputRef.current.value = "";
-    if (!isCreatePostLoading) {
-      if (addPostSuccess) {
-        toast.success(data.msg);
-      }
-      if (isCreatePostError) {
-        toast.error(createPostError);
-      }
-    }
+    try {
+      dispatch(
+        addPost({
+          image: Image,
+          caption: input,
+        })
+      );
+    } catch (error) {}
   };
 
   // * UPDATING POST LOGIC
@@ -78,11 +61,11 @@ const CreatePostModel = ({
       id: postId,
       data: {
         image: Image,
-        caption: inputRef.current.value,
+        caption: input,
       },
     });
     setImage(null);
-    inputRef.current.value = "";
+    setInput("");
     if (!isUpdatePostLoading) {
       if (updatePostSuccess) {
         toast.success(updatePostData.msg);
@@ -91,7 +74,6 @@ const CreatePostModel = ({
         toast.error(updatePostError);
       }
     }
-
   };
 
   // * LOGIC FOR DISPLAYING THE SELECTED IMAGE
@@ -169,7 +151,8 @@ const CreatePostModel = ({
                   type="text"
                   className="w-full h-full outline-none text-sm bg-white dark:bg-black my-border rounded-sm px-2 py-1"
                   required
-                  ref={inputRef}
+                  value={input}
+                  onChange={({ target }) => setInput(target.value)}
                   placeholder="Enter Your Post's Caption..."
                 />
               </Box>

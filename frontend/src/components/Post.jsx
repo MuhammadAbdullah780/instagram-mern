@@ -35,7 +35,6 @@ function Post({ item, children }) {
     closeDropdown();
     deletePost(item._id);
   };
-  console.log(data);
 
   const closeDropdown = () => {
     setDropdownOpen(false);
