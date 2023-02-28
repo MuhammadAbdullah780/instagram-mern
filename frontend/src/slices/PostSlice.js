@@ -1,4 +1,5 @@
 import { createEntityAdapter, createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { toast } from "react-hot-toast";
 import postApi from '../api/PostApi'
 
 // * ASYNC THUNK FUNCTIONS
@@ -7,7 +8,8 @@ export const fetchAllPosts = createAsyncThunk('post/fetchAllPosts', async (_,{ d
     const data = await postApi.getAllPosts()
     dispatch(setPosts(data))
   } catch (err) {
-    rejectWithValue(err.msg)
+    toast.error(err)
+    rejectWithValue(null)
   }
 })
 
@@ -17,7 +19,8 @@ export const addPost = createAsyncThunk('post/addPost', async ( { data } ,{ disp
     console.log(response);
     dispatch(createPost(response.Post))
   } catch (err) {
-    rejectWithValue(err.msg)
+    toast.error(err)
+    rejectWithValue(null)
   }
 })
 
@@ -27,7 +30,8 @@ export const updatePost = createAsyncThunk('post/updatePost', async ( payload  ,
     console.log(response);
     dispatch(updateThePost(response.doc))
   } catch (err) {
-    rejectWithValue(err.msg)
+    toast.error(err)
+    rejectWithValue(null)
   }
 })
 export const deletePost = createAsyncThunk('post/deletePost', async (payload, { dispatch, rejectWithValue }) => {
@@ -36,7 +40,8 @@ export const deletePost = createAsyncThunk('post/deletePost', async (payload, { 
     console.log(response);
     dispatch(deleteThePost(payload))
   } catch (err) {
-    rejectWithValue(err.msg)
+    toast.error(err)
+    rejectWithValue(null)
   }
 })
 
@@ -47,7 +52,8 @@ export const likePost = createAsyncThunk('post/likePost', async (payload, { disp
       dispatch(updateThePost(updatedPost))
     })
   } catch (err) {
-    rejectWithValue(err.msg)
+    toast.error(err)
+    rejectWithValue(null)
   }
 })
 export const unLikePost = createAsyncThunk('post/unLikePost', async (payload, { dispatch, rejectWithValue }) => {
@@ -57,17 +63,31 @@ export const unLikePost = createAsyncThunk('post/unLikePost', async (payload, { 
       dispatch(updateThePost(updatedPost))
     })
   } catch (err) {
-    rejectWithValue(err.msg)
+    toast.error(err)
+    rejectWithValue(null)
   }
 })
-export const addComment = createAsyncThunk('post/addComment', async (payload, { dispatch, rejectWithValue }) => {
+export const addComment = createAsyncThunk('post/addComment', async ({ data }, { dispatch, rejectWithValue }) => {
   try {
-    postApi.addComment(payload).then(async ()=> {
-      const updatedPost = await postApi.getSinglePost(payload.id)
+    console.log(data);
+    postApi.addComment(data).then(async ()=> {
+      const updatedPost = await postApi.getSinglePost(data.id)
       dispatch(updateThePost(updatedPost))
     })
   } catch (err) {
-    rejectWithValue(err.msg)
+    toast.error(err)
+    rejectWithValue(null)
+  }
+})
+export const deleteComment = createAsyncThunk('post/addComment', async ({ commentId, postId }, { dispatch, rejectWithValue }) => {
+  try {
+    postApi.removeComment(postId, commentId).then(async ()=> {
+      const updatedPost = await postApi.getSinglePost(postId)
+      dispatch(updateThePost(updatedPost))
+    })
+  } catch (err) {
+    toast.error(err)
+    rejectWithValue(null)
   }
 })
 
@@ -117,13 +137,5 @@ export const { setPosts, createPost, updateThePost, deleteThePost } = postSlice.
 
 
 export const PostSelectors = postAdapter.getSelectors(state => state.Post)
-
-// export const {
-//     selectAll,
-//     selectById,
-//     selectEntities,
-//     selectIds,
-//     selectTotal,
-// } = PostSelectors
 
 export default postSlice.reducer;

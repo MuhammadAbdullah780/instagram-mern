@@ -6,9 +6,9 @@ class PostApi {
       try {
         const { data } = await axiosApi.get("/post/all");
         res(data);
-      } catch (error) {
-        console.log(error);
-        rej(error.msg);
+      } catch (err) {
+        console.log(err);
+        rej(err.message);
       }
     });
   }
@@ -17,9 +17,9 @@ class PostApi {
       try {
         const { data } = await axiosApi.get(`/post/${id}`);
         res(data);
-      } catch (error) {
-        console.log(error);
-        rej(error.msg);
+      } catch (err) {
+        console.log(err);
+        rej(err.message);
       }
     });
   }
@@ -31,7 +31,7 @@ class PostApi {
         res(response.data);
       } catch (err) {
         console.log(err);
-        rej(err);
+        rej(err.message);
       }
     });
   }
@@ -43,7 +43,7 @@ class PostApi {
         res(response.data);
       } catch (err) {
         console.log(err);
-        rej(err);
+        rej(err.message);
       }
     });
   }
@@ -55,7 +55,7 @@ class PostApi {
         res(response.data);
       } catch (err) {
         console.log(err);
-        rej(err);
+        rej(err.message);
       }
     });
   }
@@ -67,7 +67,7 @@ class PostApi {
         res(response.data);
       } catch (err) {
         console.log(err);
-        rej(err);
+        rej(err.message);
       }
     });
   }
@@ -79,19 +79,33 @@ class PostApi {
         res(response.data);
       } catch (err) {
         console.log(err);
-        rej(err);
+        rej(err.message);
       }
     });
   }
-  addComment({ id, data:text }) {
+  addComment({ id, text }) {
+    console.log("id: ",id);
+    console.log("text: ",text);
     return new Promise(async (res, rej) => {
       try {
-        const response = await axiosApi.post(`/post/${id}/comment/add`, text);
+        const response = await axiosApi.post(`/post/${id}/comment/add`,{ text });
         console.log(response);
         res(response.data);
       } catch (err) {
         console.log(err);
-        rej(err);
+        rej(err.message);
+      }
+    });
+  }
+  removeComment(postId, commentId) {
+    return new Promise(async (res, rej) => {
+      try {
+        const response = await axiosApi.delete(`/post/${postId}/comment/delete`,{ data:{ id:commentId } });
+        console.log(response);
+        res(response.data);
+      } catch (err) {
+        console.log(err);
+        rej(err.message);
       }
     });
   }

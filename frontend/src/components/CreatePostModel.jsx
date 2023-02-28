@@ -17,6 +17,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import { addPost, updatePost } from "../slices/PostSlice";
+import  Svg from './loadingSvg'
 
 const CreatePostModel = ({
   modalOpen,
@@ -29,6 +30,7 @@ const CreatePostModel = ({
   const User = useSelector((state) => state.User);
   const [Image, setImage] = useState(image);
   const [input, setInput] = useState(caption);
+  const [completed, setCompleted] = useState(true);
   const dispatch = useDispatch();
   // * SUBMITTING POST LOGIC
   const handleCreatePost = (e) => {
@@ -43,10 +45,13 @@ const CreatePostModel = ({
             caption: input,
           },
         })
-      ).then(()=> {
+      ).then(() => {
+        setCompleted(true);
         setImage(null);
         setInput("");
-      })
+        toast.success('Post Created Successfully')
+        HandleModalClose();
+      });
     } catch (error) {}
   };
 
@@ -63,10 +68,12 @@ const CreatePostModel = ({
         },
       })
     ).then(() => {
-      console.log("complete");
-    });
-    setImage(null);
-    setInput("");
+      setCompleted(true);
+      setImage(null);
+      HandleModalClose();
+      setInput("");
+      toast.success('Post Updated Successfully')
+    })
   };
 
   // * LOGIC FOR DISPLAYING THE SELECTED IMAGE
@@ -136,7 +143,7 @@ const CreatePostModel = ({
                   component="h4"
                   className="text-black dark:text-white font-semibold font-Roboto"
                 >
-                  {User?.username}
+                  {User?.username || 'User' }
                 </Typography>
               </Link>
               <Box className="flex items-center justify-start w-[70%]">
@@ -162,9 +169,10 @@ const CreatePostModel = ({
                 <button
                   type="submit"
                   className="active-scale my-border text-black dark:text-white rounded-md px-5 py-1 bg-white dark:bg-black"
-                  onClick={HandleModalClose}
+                  onClick={() => setCompleted(false)}
                 >
-                  {`${mode} Post`}
+                  <Svg completed={completed}/>
+                  { completed ? `${mode} Post` : 'Loading...' }
                 </button>
                 <button
                   type="button"

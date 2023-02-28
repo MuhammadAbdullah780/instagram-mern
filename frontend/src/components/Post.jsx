@@ -18,18 +18,23 @@ import {
   useRemoveLikeMutation,
 } from "../services/PostEndpoints";
 import { addComment, deletePost, likePost, unLikePost } from "../slices/PostSlice";
+import Svg from './loadingSvg'
+import { toast } from "react-hot-toast";
 
 function Post({ item, children }) {
   const User = useSelector((state) => state.User);
   const commentRef = useRef("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [completed, setCompleted] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
 
   const handleDeletePost = () => {
+    setCompleted(false)
     dispatch(deletePost(item._id)).then(()=> {
+      setCompleted(true)
       closeDropdown();
     })
   };
@@ -110,6 +115,7 @@ function Post({ item, children }) {
                       onClick={handleDeletePost}
                       className="block active-scale px-4 py-2 text-sm text-gray-500 rounded-lg hover:bg-gray-50 hover:text-gray-700"
                     >
+                      <Svg completed={completed}/>
                       Delete Post &nbsp; <DeleteIcon />
                     </button>
                   </div>
@@ -182,8 +188,10 @@ function Post({ item, children }) {
                   onClick={() => {
                     dispatch(
                       addComment({
-                        id: item._id,
-                        data: commentRef.current.value,
+                        data: {
+                            id: item._id,
+                            text: commentRef.current.value,
+                        }
                       })
                     )
                     commentRef.current.value = "";
