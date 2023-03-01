@@ -1,6 +1,9 @@
 import { createEntityAdapter, createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "react-hot-toast";
+import authApi from "../api/AuthApi";
 import postApi from '../api/PostApi'
+import { getUser } from './UserSlice'
+import profileApi from "../api/ProfileApi";
 
 // * ASYNC THUNK FUNCTIONS
 export const fetchAllPosts = createAsyncThunk('post/fetchAllPosts', async (_,{ dispatch, rejectWithValue })=> {
@@ -17,6 +20,8 @@ export const addPost = createAsyncThunk('post/addPost', async ( { data } ,{ disp
   try {
     const response = await postApi.addPost(data)
     console.log(response);
+    const user = await profileApi.getLoggedInUser()
+    dispatch(getUser(user.user))
     dispatch(createPost(response.Post))
   } catch (err) {
     toast.error(err)
@@ -38,6 +43,8 @@ export const deletePost = createAsyncThunk('post/deletePost', async (payload, { 
   try {
     const response = await postApi.deletePost(payload)
     console.log(response);
+    const user = await profileApi.getLoggedInUser()
+    dispatch(getUser(user.user))
     dispatch(deleteThePost(payload))
   } catch (err) {
     toast.error(err)
@@ -69,7 +76,6 @@ export const unLikePost = createAsyncThunk('post/unLikePost', async (payload, { 
 })
 export const addComment = createAsyncThunk('post/addComment', async ({ data }, { dispatch, rejectWithValue }) => {
   try {
-    console.log(data);
     postApi.addComment(data).then(async ()=> {
       const updatedPost = await postApi.getSinglePost(data.id)
       dispatch(updateThePost(updatedPost))

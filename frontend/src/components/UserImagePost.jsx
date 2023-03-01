@@ -5,16 +5,13 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import {
-  useAddLikeMutation,
-  useRemoveLikeMutation,
-} from "../services/PostEndpoints";
+import { useDispatch, useSelector } from "react-redux";
+import postApi from "../api/PostApi";
+import { likePost, unLikePost } from "../slices/PostSlice";
 
 const UserImagePost = ({ item }) => {
+  const dispatch = useDispatch()
   const User = useSelector((state) => state.User);
-  const [addLike] = useAddLikeMutation();
-  const [removeLike] = useRemoveLikeMutation();
   return (
     <Box className="relative group h-auto w-full object-cover">
       <LazyLoadImage className="h-72 aspect-post" src={item?.image} alt={item?.caption} />
@@ -29,13 +26,13 @@ const UserImagePost = ({ item }) => {
             <FavoriteIcon
               style={{ fill: "#FD1D1D" }}
               className="dark-text active-scale "
-              onClick={() => removeLike(item._id)}
+              onClick={() => dispatch(unLikePost(item._id))}
             />
           ) : (
             <FavoriteBorderIcon
               className="dark-text active-scale"
               style={{ fill: "#ffffff" }}
-              onClick={() => addLike(item._id)}
+              onClick={() => dispatch(likePost(item._id))}
             />
           )}
         </Typography>

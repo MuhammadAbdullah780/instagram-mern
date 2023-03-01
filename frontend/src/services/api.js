@@ -15,7 +15,7 @@ export const Api = createApi({
       return headers
     },
   }),
-  tagTypes: ["Posts", "loggedInUser", "user"],
+  tagTypes: ["loggedInUser", "user"],
 
   endpoints: (builder) => ({}),
 });

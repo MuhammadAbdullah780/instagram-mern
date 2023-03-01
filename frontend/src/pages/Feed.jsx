@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { CircularProgress, Stack } from "@mui/material";
-import { useGetAllPostsQuery } from "../services/PostEndpoints";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllPosts, PostSelectors, setPosts } from "../slices/PostSlice";
 import Post from "../components/Post";

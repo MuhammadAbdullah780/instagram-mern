@@ -11,15 +11,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import CreatePostModel from "./CreatePostModel";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  useAddCommentMutation,
-  useAddLikeMutation,
-  useDeletePostMutation,
-  useRemoveLikeMutation,
-} from "../services/PostEndpoints";
 import { addComment, deletePost, likePost, unLikePost } from "../slices/PostSlice";
 import Svg from './loadingSvg'
-import { toast } from "react-hot-toast";
 
 function Post({ item, children }) {
   const User = useSelector((state) => state.User);
@@ -35,6 +28,7 @@ function Post({ item, children }) {
     setCompleted(false)
     dispatch(deletePost(item._id)).then(()=> {
       setCompleted(true)
+      navigate('/')
       closeDropdown();
     })
   };

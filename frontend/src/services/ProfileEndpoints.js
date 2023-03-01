@@ -16,13 +16,6 @@ const ProfileEndPoints = Api.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
-    getSelectedUserPosts: builder.query({
-      query: (id) => ({
-        url: `/profile/${id}/posts`,
-        method: "GET",
-      }),
-      providesTags: ["Posts", "user"],
-    }),
     followUser: builder.mutation({
       query: (id) => ({
         url: `/profile/${id}/follow`,

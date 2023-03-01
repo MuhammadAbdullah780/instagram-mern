@@ -17,10 +17,7 @@ const Home = () => {
     }
     if (!isFetching && !isError) {
       dispatch(
-        getUser({
-          user: data.user,
-          token: JSON.parse(localStorage.getItem("token")),
-        })
+        getUser(data.user)
       );
     }
   }, [data, dispatch, isFetching, token, isError]);

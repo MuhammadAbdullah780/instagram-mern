@@ -1,39 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import { useSignUpMutation } from "../../services/AuthEndpoints";
+import authApi from "../../api/AuthApi";
+import Svg from '../loadingSvg'
+
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [completed, setCompleted] = useState(true);
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
-  const token = JSON.parse(localStorage.getItem("token"));
-  const [signUp, { isError, error, isLoading, data }] = useSignUpMutation();
-
-  useEffect(() => {
-    if (token) {
-      navigate("/");
-    }
-  }, [token, navigate]);
 
   const signUpTheUser = async (e) => {
+    setCompleted(false)
     e.preventDefault();
-
-    signUp({
+    authApi.signUp({
       username,
       email,
       password,
-    });
-
-    if (!isLoading) {
-      if (isError) {
-        toast.error(error.data.msg);
-      } else {
-        toast.success(data.msg);
-        navigate("/login");
-      }
-    }
+    }).then((data)=> {
+      toast.success(data.msg);
+      navigate("/login");
+      setCompleted(true);
+    }).catch((err)=> {
+      toast.error(err.response.data.msg)
+      setCompleted(true);
+    })
   };
 
   return (
@@ -66,13 +59,13 @@ const SignUp = () => {
             onChange={({ target }) => setPassword(target.value)}
             placeholder="Enter Your Password"
             type="password"
-            required
           />
           <button
             type="submit"
             className="active-scale text-sm text-center bg-blue-300 text-white py-1 rounded font-medium"
           >
-            Sign Up
+            <Svg completed={completed} />
+            {completed ? 'Sign Up' : "Loading..."}
           </button>
         </form>
       </div>

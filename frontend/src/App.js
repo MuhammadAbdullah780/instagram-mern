@@ -5,22 +5,27 @@ import ProfilePage from "./pages/ProfilePage";
 import SpecificPost from "./pages/SpecificPost";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import UserPosts from "./pages/UserPosts";
-import ProfileEdit from './pages/ProfileEdit'
+import ProfileEdit from "./pages/ProfileEdit";
 import { CircularProgress, Box } from "@mui/material";
-
+import AuthenticatedRoute from "./utils/AuthenticatedRoute";
 
 const Login = lazy(() => import("./components/login/Login"));
 const Home = lazy(() => import("./pages/Home"));
 const SignUp = lazy(() => import("./components/signup/SignUp"));
 
 function App() {
-  const token = localStorage.getItem("token");
   return (
     <BrowserRouter>
-      <Suspense fallback={<Box className="h-screen w-screen flex items-center justify-center"><CircularProgress/></Box>} >
+      <Suspense
+        fallback={
+          <Box className="h-screen w-screen flex items-center justify-center">
+            <CircularProgress />
+          </Box>
+        }
+      >
         <Routes>
           {/* PROTECTED ROUTES */}
-          <Route element={<ProtectedRoute token={token} />}>
+          <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />}>
               <Route index element={<Feed />} />
               <Route path="profile/:id" element={<ProfilePage />}>
@@ -31,8 +36,10 @@ function App() {
             </Route>
           </Route>
           {/* AUTHENTICATED ROUTES */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route element={<AuthenticatedRoute/>}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+          </Route>
         </Routes>
       </Suspense>
     </BrowserRouter>

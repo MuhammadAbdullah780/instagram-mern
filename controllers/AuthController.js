@@ -21,7 +21,7 @@ const signUp = async (req, res, next) => {
     // * VALIDATION CHECK
     if (!username || !email || !password)
       return res
-        .status(statusCode.PARTIAL_CONTENT)
+        .status(statusCode.UNPROCESSABLE_ENTITY)
         .json({ msg: "Please fill the fields properly"});
 
     // * CHECKING IF USER EXISTS OR NOT
@@ -66,7 +66,7 @@ const logIn = async (req, res, next) => {
     // * IF BOTH FIELDS ARE NOT FILLED
     if (!email || !password) {
       return res
-        .status(statusCode.PARTIAL_CONTENT)
+        .status(statusCode.UNPROCESSABLE_ENTITY)
         .json("Please fill the fields properly");
     }
     const existedUser = await User.findOne({ email: email }).select('+password');

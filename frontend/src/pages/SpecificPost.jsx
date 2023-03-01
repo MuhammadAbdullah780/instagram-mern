@@ -4,10 +4,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import Post from "../components/Post";
-import {
-  useGetSpecificPostQuery,
-  useRemoveCommentMutation,
-} from "../services/PostEndpoints";
 import { PostSelectors, selectById, deleteComment } from "../slices/PostSlice";
 
 const SpecificPost = () => {
@@ -18,7 +14,6 @@ const SpecificPost = () => {
   const specificPost = useSelector((state) =>
     PostSelectors.selectById(state, id)
   );
-  const [removeComment] = useRemoveCommentMutation();
 
   return (
     <>
